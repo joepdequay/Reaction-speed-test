@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Reaction Speed Game</title>
+
+    <!-- Google AdSense koppeling -->
+    <meta name="google-adsense-account" content="ca-pub-5201103230820930">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: Arial;
+            background: #667eea;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            width: 98%;
+            max-width: 1600px;
+            text-align: center;
+        }
+
+        h1 {
+            color: #333;
+            margin-top: 0;
+            font-size: 3em;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr 1fr;
+            gap: 40px;
+            align-items: start;
+        }
+
+        .left-side, .middle-side, .right-side {
+            text-align: center;
+        }
+
+        .game-box {
+            width: 100%;
+            height: 350px;
+            background: #f0f0f0;
+            border: 3px solid #ddd;
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 20px 0;
+            position: relative;
+        }
+
+        .box {
+            width: 180px;
+            height: 180px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 10px;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .stat {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 8px;
+            border-left: 6px solid #667eea;
+        }
+
+        .stat-label {
+            font-size: 1em;
+            color: #666;
+            font-weight: bold;
+        }
+
+        .stat-value {
+            font-size: 2.2em;
+            font-weight: bold;
+            color: #667eea;
+            margin-top: 10px;
+        }
+
+        .msg {
+            font-size: 1.4em;
+            font-weight: bold;
+            margin: 25px 0;
+            height: 50px;
+        }
+
+        button {
+            padding: 18px 40px;
+            margin: 10px 8px;
+            font-size: 1.2em;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            width: 48%;
+        }
+
+        .btn-start { background: #667eea; color: white; }
+        .btn-reset { background: #e74c3c; color: white; }
+
+        .rating {
+            background: #f0f0f0;
+            padding: 25px;
+            border-radius: 8px;
+            margin: 20px 0;
+            font-weight: bold;
+            font-size: 1.3em;
+        }
+
+        .chart, .times-list {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <!-- Advertentie bovenaan -->
+    <ins class="adsbygoogle"
+         style="display:block; text-align:center;"
+         data-ad-client="ca-pub-5201103230820930"
+         data-ad-slot="1234567890"
+         data-ad-format="auto"
+         data-full-width-responsive="true"></ins>
+    <script>
+         (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+
+    <h1>⚡ Reaction Speed Test</h1>
+
+    <div class="main-content">
+        <div class="left-side">
+            <h2>🎮 Game</h2>
+            <div class="game-box">
+                <div class="box" id="box">CLICK!</div>
+            </div>
+
+            <div class="msg" id="msg">Press START to begin</div>
+
+            <div class="stats">
+                <div class="stat">
+                    <div class="stat-label">Best Time</div>
+                    <div class="stat-value" id="best">-</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-label">Average</div>
+                    <div class="stat-value" id="avg">-</div>
+                </div>
+            </div>
+
+            <div>
+                <button class="btn-start" id="btn-start">START</button>
+                <button class="btn-reset" id="btn-reset">RESET</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+var box = document.getElementById("box");
+var msg = document.getElementById("msg");
+var btnStart = document.getElementById("btn-start");
+var btnReset = document.getElementById("btn-reset");
+var best = document.getElementById("best");
+var avg = document.getElementById("avg");
+
+var playing = false;
+var startTime = 0;
+var times = [];
+var timeout = null;
+
+btnStart.onclick = function() { startGame(); };
+btnReset.onclick = function() { resetGame(); };
+
+box.onclick = function() {
+    if (playing) clickBox();
+};
+
+function startGame() {
+    playing = false;
+    box.style.display = "none";
+    msg.textContent = "Wait for it...";
+    btnStart.disabled = true;
+
+    var delay = Math.random() * 3000 + 1500;
+
+    timeout = setTimeout(function() {
+        box.style.display = "flex";
+        msg.textContent = "GO! CLICK NOW!";
+        playing = true;
+        startTime = Date.now();
+    }, delay);
+}
+
+function clickBox() {
+    var time = Date.now() - startTime;
+    times.push(time);
+    playing = false;
+    box.style.display = "none";
+    msg.textContent = "Great! " + time + "ms";
+    updateStats();
+    btnStart.disabled = false;
+}
+
+function updateStats() {
+    var bestTime = Math.min.apply(Math, times);
+    var sum = times.reduce((a,b)=>a+b,0);
+    var avgTime = Math.round(sum / times.length);
+
+    best.textContent = bestTime + "ms";
+    avg.textContent = avgTime + "ms";
+}
+
+function resetGame() {
+    clearTimeout(timeout);
+    playing = false;
+    times = [];
+    box.style.display = "none";
+    msg.textContent = "Press START to begin";
+    best.textContent = "-";
+    avg.textContent = "-";
+    btnStart.disabled = false;
+}
+</script>
+
+</body>
+</html>
